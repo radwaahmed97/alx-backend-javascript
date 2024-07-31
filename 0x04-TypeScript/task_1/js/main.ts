@@ -1,34 +1,34 @@
-interface Teacher {
+export interface Teacher {
     readonly firstName: string;
     readonly lastName: string;
     fullTimeEmployee: boolean;
     yearsOfExperience?: number;
     location: string;
-    [index: string]: any;
+    [index: string]: string | number | boolean;
 }
 
-interface Directors extends Teacher {
+export interface Directors extends Teacher {
     numberOfReports: number;
 }
 
-interface printTeacherFunction {
+export interface PrintTeacherFunction {
     (firstName: string, lastName: string): string;
 }
 
-function printTeacher(firstName: string, lastName: string): string {
+export function printTeacher(firstName: string, lastName: string): string {
     return `${firstName[0]}. ${lastName}`;
 }
 
-interface IStudentClassConstructor {
-    new(firstName: string, lastName: string): IStudentClass;
+export interface StudentClassConstructor {
+    new(firstName: string, lastName: string): StudentClass;
 }
 
-interface IStudentClass {
+export interface StudentClass {
     workOnHomework(): string;
     displayName(): string;
 }
 
-class StudentClass implements IStudentClass {
+export class StudentClass implements StudentClass {
     private _firstName!: string;
     private _lastName!: string;
 
@@ -37,15 +37,15 @@ class StudentClass implements IStudentClass {
         this._lastName = lastName;
     }
 
-    workOnHomework() {
+    workOnHomework(): string {
         return 'Currently working';
     }
 
-    displayName() {
+    displayName(): string {
         return this._firstName;
     }
 }
 
-function createStudent(ctor: IStudentClassConstructor, firstName: string, lastName: string): IStudentClass {
+export function createStudent(ctor: StudentClassConstructor, firstName: string, lastName: string): StudentClass {
     return new ctor(firstName, lastName);
 }
