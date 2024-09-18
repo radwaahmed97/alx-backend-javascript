@@ -1,48 +1,38 @@
 const fs = require('fs');
 
 /**
- * Counts the students in a CSV data file.
- * @param {String} dataPath The path to the CSV data file.
+ * Reads CSV file asynchronously, parses the data and
+ * prints it to stdout.
+ * @param {string} dbPath - path to csv file.
  */
-const countStudents = (dataPath) => new Promise((resolve, reject) => {
-    fs.readFile(dataPath, 'utf-8', (err, data) => {
-        if (err) {
-            reject(new Error('Cannot load the database'));
-        }
-        if (data) {
-            const fileLines = data
-                .toString('utf-8')
-                .trim()
-                .split('\n');
-            const studentGroups = {};
-            const dbFieldNames = fileLines[0].split(',');
-            const studentPropNames = dbFieldNames
-                .slice(0, dbFieldNames.length - 1);
+function countStudents(dbPath) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(dbPath, 'utf-8', (error, data) => {
+            if (error) {
+                reject(Error('Cannot load the database'));
+            } else {
+                const courses = new Map();
+                let students = data.split('\n');
+                students = students.slice(1, students.length - 1);
 
-            for (const line of fileLines.slice(1)) {
-                const studentRecord = line.split(',');
-                const studentPropValues = studentRecord
-                    .slice(0, studentRecord.length - 1);
-                const field = studentRecord[studentRecord.length - 1];
-                if (!Object.keys(studentGroups).includes(field)) {
-                    studentGroups[field] = [];
-                }
-                const studentEntries = studentPropNames
-                    .map((propName, idx) => [propName, studentPropValues[idx]]);
-                studentGroups[field].push(Object.fromEntries(studentEntries));
-            }
+                // Parse CSV data creating a map of courseData objects.
+                students.forEach((student) => {
+                    const studentData = student.split(',');
+                    const firstName = studentData[0];
+                    const field = studentData[3];
+                    if (courses.has(field)) courses.get(field).push(firstName);
+                    else courses.set(field, [firstName]);
+                });
 
-            const totalStudents = Object
-                .values(studentGroups)
-                .reduce((pre, cur) => (pre || []).length + cur.length);
-            console.log(`Number of students: ${totalStudents}`);
-            for (const [field, group] of Object.entries(studentGroups)) {
-                const studentNames = group.map((student) => student.firstname).join(', ');
-                console.log(`Number of students in ${field}: ${group.length}. List: ${studentNames}`);
+                // Display information from map
+                console.log(`Number of students: ${students.length}`);
+                courses.forEach((courseStudents, course) => {
+                    console.log(`Number of students in ${course}: ${courseStudents.length}. List: ${courseStudents.join(', ')}`);
+                });
+                resolve();
             }
-            resolve(true);
-        }
+        });
     });
-});
+}
 
 module.exports = countStudents;
