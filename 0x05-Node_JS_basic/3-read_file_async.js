@@ -1,8 +1,8 @@
 const fs = require('fs');
+
 /**
- * countStudents is a function that reads a CSV file and prints the content of the file.
- * @param {String} Path the path to the csv file required to read by function
- * @return number of students
+ * Counts the students in a CSV data file.
+ * @param {String} Path The path to the CSV data file.
  */
 const countStudents = (Path) => new Promise((resolve, reject) => {
     fs.readFile(Path, 'utf-8', (err, data) => {
@@ -20,15 +20,15 @@ const countStudents = (Path) => new Promise((resolve, reject) => {
                 .slice(0, dbaseFields.length - 1);
 
             for (const line of fLines.slice(1)) {
-                const studentData = line.split(',');
-                const studentPropVals = studentData
-                    .slice(0, studentData.length - 1);
-                const field = studentData[studentData.length - 1];
+                const studentRecord = line.split(',');
+                const studentPropValues = studentRecord
+                    .slice(0, studentRecord.length - 1);
+                const field = studentRecord[studentRecord.length - 1];
                 if (!Object.keys(studentGroups).includes(field)) {
                     studentGroups[field] = [];
                 }
                 const studentEntries = studentPropNames
-                    .map((propName, i) => [propName, studentPropVals[i]]);
+                    .map((propName, idx) => [propName, studentPropValues[idx]]);
                 studentGroups[field].push(Object.fromEntries(studentEntries));
             }
 
