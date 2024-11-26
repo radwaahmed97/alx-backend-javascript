@@ -1,10 +1,10 @@
 /**
- * @constructor Create a new console object
- * @param {string} message - The message to display
- * @return {void}
+ * Displays a message on the STDOUT.
+ * @param {String} message The message to display.
+ * @return void
  */
-function displayMessage(message) {
-    console.log(message);
-}
+const displayMessage = (message) => {
+  console.log(message);
+};
 
 module.exports = displayMessage;
