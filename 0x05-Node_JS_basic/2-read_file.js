@@ -5,23 +5,23 @@ const fs = require('fs');
  * @param {String} dataPath The path to the CSV data file.
  * @return number of students
  */
-const countStudents = (dataPath) => {
-  if (!fs.existsSync(dataPath)) {
+const countStudents = (dbPath) => {
+  if (!fs.existsSync(dbPath)) {
     throw new Error('Cannot load the database');
   }
-  if (!fs.statSync(dataPath).isFile()) {
+  if (!fs.statSync(dbPath).isFile()) {
     throw new Error('Cannot load the database');
   }
-  const fileLines = fs
-    .readFileSync(dataPath, 'utf-8')
+  const fLines = fs
+    .readFileSync(dbPath, 'utf-8')
     .toString('utf-8')
     .trim()
     .split('\n');
   const studentGroups = {};
-  const dbFieldNames = fileLines[0].split(',');
-  const studentPropNames = dbFieldNames.slice(0, dbFieldNames.length - 1);
+  const dbFields = fLines[0].split(',');
+  const studentPropNames = dbFields.slice(0, dbFields.length - 1);
 
-  for (const line of fileLines.slice(1)) {
+  for (const line of fLines.slice(1)) {
     const studentRecord = line.split(',');
     const studentPropValues = studentRecord.slice(0, studentRecord.length - 1);
     const field = studentRecord[studentRecord.length - 1];
