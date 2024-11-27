@@ -2,24 +2,24 @@ const fs = require('fs');
 
 /**
  * Counts the students in a CSV data file.
- * @param {String} dataPath The path to the CSV data file.
+ * @param {String} dbPath The path to the CSV data file.
  */
-const countStudents = (dataPath) => new Promise((resolve, reject) => {
-  fs.readFile(dataPath, 'utf-8', (err, data) => {
+const countStudents = (dbPath) => new Promise((resolve, reject) => {
+  fs.readFile(dbPath, 'utf-8', (err, data) => {
     if (err) {
       reject(new Error('Cannot load the database'));
     }
     if (data) {
-      const fileLines = data
+      const fLines = data
         .toString('utf-8')
         .trim()
         .split('\n');
       const studentGroups = {};
-      const dbFieldNames = fileLines[0].split(',');
-      const studentPropNames = dbFieldNames
-        .slice(0, dbFieldNames.length - 1);
+      const dbFields = fLines[0].split(',');
+      const studentPropNames = dbFields
+        .slice(0, dbFields.length - 1);
 
-      for (const line of fileLines.slice(1)) {
+      for (const line of fLines.slice(1)) {
         const studentRecord = line.split(',');
         const studentPropValues = studentRecord
           .slice(0, studentRecord.length - 1);
