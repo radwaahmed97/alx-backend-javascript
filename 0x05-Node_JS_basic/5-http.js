@@ -8,29 +8,29 @@ const DB_FILE = process.argv.length > 2 ? process.argv[2] : '';
 
 /**
  * Counts the students in a CSV data file.
- * @param {String} dataPath The path to the CSV data file.
+ * @param {String} dbPath The path to the CSV data file.
  * @return list of our studens the same at 3-read_file
  */
-const countStudents = (dataPath) => new Promise((resolve, reject) => {
-  if (!dataPath) {
+const countStudents = (dbPath) => new Promise((resolve, reject) => {
+  if (!dbPath) {
     reject(new Error('Cannot load the database'));
   }
-  if (dataPath) {
-    fs.readFile(dataPath, (err, data) => {
+  if (dbPath) {
+    fs.readFile(dbPath, (err, data) => {
       if (err) {
         reject(new Error('Cannot load the database'));
       }
       if (data) {
         const reportParts = [];
-        const fileLines = data.toString('utf-8').trim().split('\n');
+        const fLines = data.toString('utf-8').trim().split('\n');
         const studentGroups = {};
-        const dbFieldNames = fileLines[0].split(',');
-        const studentPropNames = dbFieldNames.slice(
+        const dbFields = fLines[0].split(',');
+        const studentPropNames = dbFields.slice(
           0,
-          dbFieldNames.length - 1,
+          dbFields.length - 1,
         );
 
-        for (const line of fileLines.slice(1)) {
+        for (const line of fLines.slice(1)) {
           const studentRecord = line.split(',');
           const studentPropValues = studentRecord.slice(
             0,
