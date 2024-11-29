@@ -37,19 +37,51 @@ describe('API integration test', () => {
   it('GET /available_payments returns correct response', (done) => {
     request.get(`${url_api}/available_payments`, (_err, res, body) => {
       expect(res.statusCode).to.be.equal(200);
-      expect(body).to.be.equal('{"payment_methods":{"credit_cards":true,"paypal":false}}');
+
+      // Parse the JSON response
+      const expectedResponse = {
+        payment_methods: {
+          credit_cards: true,
+          paypal: false,
+        },
+      };
+
+      expect(JSON.parse(body)).to.deep.equal(expectedResponse);
+      done();
+    });
+  });
+  it('POST /login returns correct response for valid userName', (done) => {
+    const options = {
+      url: `${url_api}/login`,
+      json: true,
+      body: { userName: 'johndoe' },
+    };
+    request.post(options, (_err, res, body) => {
+      expect(res.statusCode).to.be.equal(200);
+
+      // Check that the response welcomes the user
+      const expectedResponse = `Welcome johndoe`;
+
+      expect(body).to.be.equal(expectedResponse);
       done();
     });
   });
 
-  it('POST /login returns correct response', (done) => {
+  it('POST /login returns 400 for missing userName', (done) => {
     const options = {
       url: `${url_api}/login`,
-      form: { userName: 'Betty' },
+      json: true,
+      body: {}, // Empty body
     };
     request.post(options, (_err, res, body) => {
-      expect(res.statusCode).to.be.equal(200);
-      expect(body).to.be.equal('Welcome Betty');
+      expect(res.statusCode).to.be.equal(400);
+
+      // Check that the response indicates the error
+      const expectedResponse = {
+        error: 'Username is required',
+      };
+
+      expect(body).to.deep.equal(expectedResponse);
       done();
     });
   });
